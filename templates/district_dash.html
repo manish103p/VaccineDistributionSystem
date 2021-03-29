@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+
+    {% block content %}
+
+    {% if error %}
+    <p>Please correct the following errors:</p>
+      {% for field in error %}
+        {% if field %}
+        <div class="alert alert-primary" role="alert">
+          {{ field }}
+        </div>
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <table>
+                <tr>
+                    <th>Name</th>
+                </tr>
+                <tr>
+                    <td><input type="text" id="name" name="name" /></td>
+                    <br>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+            </table>
+            <br>
+            <input type="submit" id="add" value="Add center" />
+        </form>
+
+        <br><br>
+
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Center ID</th>
+                <th scope="col">Center Name</th>
+                <th scope="col">UUID</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for center in centers %}
+              <tr>
+                <th scope="row">{{center.centerPrimaryKey}}</th>
+                <td>{{center.name}}</td>
+                <td>{{center.centerId.urn|slice:"9:"}}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+
+    {% endblock content %}

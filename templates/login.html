@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+
+    {% block content %}
+
+
+{% block title %}Loggin Account{% endblock %}
+{% block sub_content %}
+<br>
+<br>
+<br>
+<br>
+<br>
+
+{% if error %}
+<p>Please correct the following errors:</p>
+{% for field in error %}
+{% if field %}
+<div class="alert alert-primary" role="alert">
+  {{ field }}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+<br>
+<br>
+<form action="/login" id="login" name="loginform" method="POST">
+  {% csrf_token %}
+  <hr>
+
+    <label for="email">Email</label>
+    <input type="text" name="email" placeholder="john@example.com" />
+    <!-- <label for="district">District</label>
+    <input type="text" name="district" placeholder="thane" />
+    <label for="center">Center</label>
+    <input type="text" name="center" placeholder="Vashi" /> -->
+    <label for="password">Password</label>
+    <input type="password" name="password" placeholder="******" />
+    <input type="submit" value="Login" class="button" />
+
+</form>
+
+{% endblock sub_content %}
+{% endblock content %}
+

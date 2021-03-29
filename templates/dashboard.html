@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+
+    {% block content %}
+        <br><br>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">District Name</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% if districts %}
+          {% for district in districts %}
+            <tr>
+              {% url 'district_dash' district as district_url%}
+              <td><a href="{{district_url}}">{{district}}</a></td>
+            </tr>
+          {% endfor %}
+          {% endif %}
+          </tbody>
+        </table>
+
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Center Name</th>
+
+              </tr>
+            </thead>
+            <tbody>
+              {% if centers %}
+            {% for center in centers %}
+              <tr>
+                {% url 'center_dash' center as center_url%}
+                <td><a href="{{center_url}}">{{center}}</a></td>
+              </tr>
+            {% endfor %}
+            {% endif %}
+            </tbody>
+          </table>
+
+    {% endblock content %}
