@@ -21,7 +21,7 @@
                     <th>Name</th>
                 </tr>
                 <tr>
-                    <td><input type="text" id="name" name="name" /></td>
+                    <td><input type="text" id="name" name="name" required /></td>
                     <br>
                 </tr>
                 <tr>
@@ -48,6 +48,28 @@
                 <th scope="row">{{center.centerPrimaryKey}}</th>
                 <td>{{center.name}}</td>
                 <td>{{center.centerId.urn|slice:"9:"}}</td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+          <br><br>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Lot ID</th>
+                <th scope="col">Arrival Time</th>
+                <th scope="col">Departure Time</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for lot in vaccine_lots %}
+              <tr>
+                <th scope="row">{{ lot.lot.lotId }}</th>
+                <td>Arrival Time</td>
+                <td>Departure Time</td>
+                <td><a href="updateArrivalTime/{{ lot.lot.lotId }}"><button type="button">Update Arrival</button></a>
               </tr>
             {% endfor %}
             </tbody>

@@ -76,12 +76,10 @@ class ProvideAccessForm(forms.ModelForm):
             if center_obj.count()==0:
                 raise forms.ValidationError("No Center exists")
             center_access = AccessControlListCenter.objects.filter(person=self.user,center=center_obj[0])
-            if not center_access.exists():
+            if center_access.exists():
                 raise forms.ValidationError("Access already exists")
         return self.cleaned_data['center_name']
 
-
-        
     def clean_district_name(self):
         district_name = self.cleaned_data['district_name'].lower()
         if district_name=="_":

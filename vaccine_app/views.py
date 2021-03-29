@@ -9,6 +9,7 @@ from django.contrib.auth import authenticate, login, logout, models
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import uuid
+import time
 # Create your views here.
 def index(request):
     # objs = [VaccineLot() for i in range(40)]
@@ -268,8 +269,7 @@ def provideaccess(request):
             key=provide_access_form.cleaned_data["key"]
             if center_name != "_":
                 center_obj=Center.objects.get(name=center_name)
-                if key==center_obj.centerId.urn[9:]:
-                    
+                if key==center_obj.centerId.urn[9:]:      
                     user=User.objects.get(email=request.user.email)
                     AccessControlListCenter.objects.create(
                         person=user,
@@ -338,45 +338,76 @@ def district_dash(request,name):
     if name=="":
         return redirect('dashboard')
     if verify(request,"district",name):
-        district_obj=District.objects.filter(name=name)
-        dist = AccessControlListDistrict.objects.get(person = request.user,district=district_obj[0])
-        dist_ID = dist.district
-        centers = Center.objects.filter(district=dist_ID)
+        district_obj=District.objects.get(name=name)
+        #dist = AccessControlListDistrict.objects.get(person = request.user,district=district_obj[0])
+        #dist_ID = dist.district
+        centers = Center.objects.filter(district=district_obj)
+        vaccine_lots = DistrictVaccineData.objects.filter(district = district_obj)
         error=[]
         if request.method=="POST":
-            nameCenter = request.POST['name']
+            nameOfCenter = request.POST['name']
+            if Center.objects.filter(name=nameOfCenter).exists():
+                error.append("Center Already Exists")
+            else:
+                new_center=Center(name=nameOfCenter,district=district_obj)
+                new_center.save()
             
-            if(nameCenter!=""):
-                centeradd_obj=Center.objects.filter(name=nameCenter)
-                district_name=name
-                district_obj=District.objects.get(name=name)
-                if centeradd_obj.exists():
-                    error.append("Center Already Exists")
-                else:
-                    new_center=Center(name=nameCenter,district=district_obj)
-                    new_center.save()
-
-                name=""
-        
-        return render(request,'district_dash.html',{'centers':centers,'error':error})
+        return render(request,'district_dash.html',{'centers':centers, 'error':error, 'vaccine_lots':vaccine_lots})
     else:
         return redirect('dashboard')
 
 
-
-
+@login_required
+def recieved_lot_at_district(request,name):
+    if verify(request,"district",name):
+        district_obj=District.objects.get(name=name)
+        if request.method == "POST":
+            lotId = request.POST["lotID"]
+            arrival_time = request.POST["arrivalTime"]
+            vaccine_lots = DistrictVaccineData.objects.create(district = district_obj)
 
 @login_required
 def center_dash(request,name):
     if name=="":
         return redirect('dashboard')
     if verify(request,"center",name):
-
-
         return HttpResponse("Center name: "+name+"\nUser Name: "+request.user.first_name)
     else:
         return redirect('dashboard')
 
+@login_required
+def admin_dashboard(request):
+    if request.user.is_superuser:
+        #if request.method == "POST":
+        error = ""
+        districts = District.objects.all() 
+        if request.method == "POST":
+            district_names = request.POST.getlist('districts')
+            lot_quantities = request.POST.getlist('quantities')
+            district_quantities = list(zip(district_names,lot_quantities))
+            error = ""
+            count = 0
+            for district_name,lot_quantity in district_quantities:
+                if(int(lot_quantity) > 0):
+                    count = int(lot_quantity)
+                    while count != 0:
+                        lots_count = VaccineLot.objects.filter(status = "produced").count()
+                        if(lots_count > 0):
+                            lot =  VaccineLot.objects.filter(status = "produced")[0]
+                            district = District.objects.get(name = district_name)
+                            district_vaccine_obj = DistrictVaccineData.objects.create(lot = lot, district=district)
+                            district_vaccine_obj.save()
+                            lot.status = "transitToDistrict"
+                            #DEPARTURE TIMESTAMP
+                            lot.save()
+                            count -= 1
+                        else:
+                            error = "Quantities were assigned upto district: " + district_name 
+                            break
+        quantity_available = VaccineLot.objects.filter(status = "produced").count()
+        context = {"districts":districts,"quantity_available":quantity_available,"error":error}
+        return render(request,"admin_dashboard.html",context)
+    return redirect("admin")
 
 
 
