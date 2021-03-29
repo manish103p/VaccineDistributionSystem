@@ -78,7 +78,7 @@ class VaccineLot(models.Model):
     lotId = models.AutoField(primary_key=True)
     status=models.CharField(max_length = 20, choices = lot_status, default = 'produced')
     productionTimestamp = models.DateTimeField(auto_now_add=True)
-    departureTimestamp = models.DateTimeField()
+    departureTimestamp = models.DateTimeField(blank = True, null=True, default=None)
 
 
 class District(models.Model):
@@ -93,8 +93,8 @@ class District(models.Model):
 class DistrictVaccineData(models.Model):
     district = models.ForeignKey(District,on_delete=models.CASCADE,related_name="districtVaccine")
     lot = models.OneToOneField(VaccineLot, on_delete=models.CASCADE,related_name="districtVaccine")
-    arrivalTimestamp = models.DateTimeField(auto_now_add=True)
-    departureTimestamp = models.DateTimeField(auto_now_add=True,null=True)
+    arrivalTimestamp = models.DateTimeField(blank = True, null=True, default=None)
+    departureTimestamp = models.DateTimeField(blank = True, null=True, default=None)
 
 #TODO check districtvaccinedata table if it's working
 #TODO lot should be 1-1 because 1 entry corresponding to one lot
@@ -113,7 +113,7 @@ class Center(models.Model):
 class CenterVaccineData(models.Model):
     center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name="centerVaccine")
     lot = models.OneToOneField(VaccineLot, on_delete=models.CASCADE, related_name="centerVaccine")
-    arrivalTimestamp = models.DateTimeField(auto_now_add=True)
+    arrivalTimestamp = models.DateTimeField(blank = True, null=True, default=None)
 
 #TODO check CenterVaccineData table if it's working, make lot one to one field to 
 

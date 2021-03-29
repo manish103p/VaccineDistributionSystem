@@ -67,9 +67,18 @@
             {% for lot in vaccine_lots %}
               <tr>
                 <th scope="row">{{ lot.lot.lotId }}</th>
-                <td>Arrival Time</td>
+                {% if lot.arrivalTimeStamp != "" %}
+                  <td>{{lot.arrivalTimestamp}}</td>
+                {% else %}
+                  <td>Not arrived yet</td>
+                {% endif %}
+
                 <td>Departure Time</td>
-                <td><a href="updateArrivalTime/{{ lot.lot.lotId }}"><button type="button">Update Arrival</button></a>
+                {% if lot.arrivalTimeStamp == 'None' %}
+                  <td>Updated Arrival Time</td>
+                {% else %}
+                  <td><a href="/district/{{name}}/updateArrivalTimeDistrict/{{ lot.lot.lotId }}"><button type="button">Update Arrival</button></a>
+                {% endif %}
               </tr>
             {% endfor %}
             </tbody>

@@ -9,7 +9,7 @@ from django.contrib.auth import authenticate, login, logout, models
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import uuid
-import time
+import datetime
 # Create your views here.
 def index(request):
     # objs = [VaccineLot() for i in range(40)]
@@ -352,7 +352,7 @@ def district_dash(request,name):
                 new_center=Center(name=nameOfCenter,district=district_obj)
                 new_center.save()
             
-        return render(request,'district_dash.html',{'centers':centers, 'error':error, 'vaccine_lots':vaccine_lots})
+        return render(request,'district_dash.html',{'centers':centers, 'error':error, 'vaccine_lots':vaccine_lots,'name':name})
     else:
         return redirect('dashboard')
 
@@ -393,15 +393,17 @@ def admin_dashboard(request):
                     while count != 0:
                         lots_count = VaccineLot.objects.filter(status = "produced").count()
                         if(lots_count > 0):
+                            print("hii")
                             lot =  VaccineLot.objects.filter(status = "produced")[0]
                             district = District.objects.get(name = district_name)
                             district_vaccine_obj = DistrictVaccineData.objects.create(lot = lot, district=district)
                             district_vaccine_obj.save()
                             lot.status = "transitToDistrict"
-                            #DEPARTURE TIMESTAMP
+                            lot.departureTimestamp = datetime.datetime.now()
                             lot.save()
                             count -= 1
                         else:
+                            print("hello")
                             error = "Quantities were assigned upto district: " + district_name 
                             break
         quantity_available = VaccineLot.objects.filter(status = "produced").count()
@@ -409,6 +411,17 @@ def admin_dashboard(request):
         return render(request,"admin_dashboard.html",context)
     return redirect("admin")
 
+
+def updateArrivalTimeDistrict(request, name, lotId):
+    district_vaccine_obj = DistrictVaccineData.objects.filter(lot__lotId__contains = lotId, district__name__contains = name)
+    if(district_vaccine_obj.exists()):
+        district_vaccine_obj = DistrictVaccineData.objects.get(lot__lotId__contains = lotId, district__name__contains = name)
+        district_vaccine_obj.arrivalTimestamp = datetime.datetime.now()
+        district_vaccine_obj.save()
+        VaccineLot.objects.filter(lotId = lotId).update(status = "atDistrict")
+        return redirect("district_dash",name)
+    else:
+        return redirect("district_dash",name)
 
 
 

@@ -15,6 +15,9 @@ urlpatterns = [
     path('provideaccess',views.provideaccess,name='provideaccess'),
 
     path('dashboard/district/<name>/',views.district_dash,name='district_dash'),
+    path('district/<str:name>/updateArrivalTimeDistrict/<int:lotId>/',views.updateArrivalTimeDistrict,name='updateArrivalTimeDistrict'),
+
+
     path('dashboard/center/<name>/',views.center_dash,name='center_dash'),
     path('dashboard/',views.dashboard,name='dashboard'),
 ]
