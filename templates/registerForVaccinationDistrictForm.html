@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <form action="/registerForVaccinationDistrictForm" method="POST" style="margin:100px 200px;">
+    {% csrf_token %}
     <div class="form-group">
         <b><label for="exampleFormControlSelect1">Select District</label></b>
         <select class="form-control" name="district">

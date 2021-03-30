@@ -125,8 +125,12 @@ class CenterVaccineData(models.Model):
 #TODO check CenterVaccineData table if it's working, make lot one to one field to 
 
 class CenterRegestration(models.Model):
-    center = models.OneToOneField(Center,on_delete=models.CASCADE,related_name="centerRegestrations")
+    center = models.ForeignKey(Center,on_delete=models.CASCADE,related_name="centerRegestrations")
+    date = models.DateField(blank = False, null=False)
     count = models.IntegerField()
+    class Meta:
+        unique_together = (("center", "date"),)
+
 
 class Receiver(models.Model):
     aadharNumber = models.CharField(max_length=16, unique=True, primary_key=True)
@@ -134,13 +138,12 @@ class Receiver(models.Model):
     name = models.CharField(max_length=255)
     contactNumber= models.CharField(max_length=12, )
     address = models.CharField(max_length=1000, null = True)
-    email = models.EmailField(unique=True)
+    appointmentDate = models.DateField(blank = True, null=True, default=None)
 
 class ReceiverVaccination(models.Model):
     receiver = models.OneToOneField(Receiver, on_delete=models.CASCADE,related_name="receiverVaccination")
     lot = models.ForeignKey(VaccineLot, on_delete=models.CASCADE,related_name="receiverVaccination")
-    appointmentDate = models.DateField(auto_now_add=True)
-    vaccineDose = models.BooleanField(default = False)
+    vaccineDose = models.BooleanField(default = True)
 
 
 class AccessControlListDistrict(models.Model):
