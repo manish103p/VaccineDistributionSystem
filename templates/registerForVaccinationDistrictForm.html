@@ -1,3 +1,17 @@
-{% for district in  districts %}
-{{ district.name }}
-{% endfor %}
+{% extends 'base.html' %}
+{% block content %}
+<form action="/registerForVaccinationDistrictForm" method="POST" style="margin:100px 200px;">
+    <div class="form-group">
+        <b><label for="exampleFormControlSelect1">Select District</label></b>
+        <select class="form-control" name="district">
+            <option value="" selected>Open this select menu</option>
+            {% for district in  districts %}
+            <option value="{{ district.name }}">{{ district.name }}</option>
+            {% endfor %}
+        </select><br>
+    </div>
+       
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
+
