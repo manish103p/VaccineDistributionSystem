@@ -9,11 +9,11 @@
 <body>
     {{quantity_available}}
     <br><br>
-    <form action="/admin_dashboard" method="POST">
+    <form action="/district/{{name}}/send_to_center" method="POST">
         {% csrf_token %}
-        {% for district in districts %}
-        <input type="hidden" name="districts" value="{{ district.name }}" readonly />
-        <b> {{ district.name }}</b>&nbsp;&nbsp;<input type="number" name="quantities" /><br><br>
+        {% for center in centers %}
+        <input type="hidden" name="centers" value="{{ center.name }}" readonly />
+        <b> {{ center.name }}</b>&nbsp;&nbsp;<input type="number" value="0" name="quantities" /><br><br>
         {% endfor %}
         
         <input type="submit" value="Submit">

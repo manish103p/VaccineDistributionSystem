@@ -14,6 +14,7 @@
       {% endfor %}
     {% endif %}
 
+        <a href="/district/{{name}}/send_to_center">Send Vaccine to Center</a>
         <form method="POST">
             {% csrf_token %}
             <table>
@@ -73,7 +74,8 @@
                   <td>Not arrived yet</td>
                 {% endif %}
 
-                <td>Departure Time</td>
+                <td>{{lot.departureTimestamp}}</td>
+                
                 {% if lot.arrivalTimeStamp == 'None' %}
                   <td>Updated Arrival Time</td>
                 {% else %}

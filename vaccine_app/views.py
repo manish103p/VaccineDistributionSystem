@@ -357,26 +357,9 @@ def district_dash(request,name):
         return redirect('dashboard')
 
 
-@login_required
-def recieved_lot_at_district(request,name):
-    if verify(request,"district",name):
-        district_obj=District.objects.get(name=name)
-        if request.method == "POST":
-            lotId = request.POST["lotID"]
-            arrival_time = request.POST["arrivalTime"]
-            vaccine_lots = DistrictVaccineData.objects.create(district = district_obj)
 
 @login_required
-def center_dash(request,name):
-    if name=="":
-        return redirect('dashboard')
-    if verify(request,"center",name):
-        return HttpResponse("Center name: "+name+"\nUser Name: "+request.user.first_name)
-    else:
-        return redirect('dashboard')
-
-@login_required
-def admin_dashboard(request):
+def send_to_district(request):
     if request.user.is_superuser:
         #if request.method == "POST":
         error = ""
@@ -408,24 +391,101 @@ def admin_dashboard(request):
                             break
         quantity_available = VaccineLot.objects.filter(status = "produced").count()
         context = {"districts":districts,"quantity_available":quantity_available,"error":error}
-        return render(request,"admin_dashboard.html",context)
+        return render(request,"send_to_district.html",context)
     return redirect("admin")
 
 
 def updateArrivalTimeDistrict(request, name, lotId):
-    district_vaccine_obj = DistrictVaccineData.objects.filter(lot__lotId__contains = lotId, district__name__contains = name)
-    if(district_vaccine_obj.exists()):
-        district_vaccine_obj = DistrictVaccineData.objects.get(lot__lotId__contains = lotId, district__name__contains = name)
-        district_vaccine_obj.arrivalTimestamp = datetime.datetime.now()
-        district_vaccine_obj.save()
-        VaccineLot.objects.filter(lotId = lotId).update(status = "atDistrict")
-        return redirect("district_dash",name)
+    if verify(request,"district",name):
+        district_vaccine_obj = DistrictVaccineData.objects.filter(lot__lotId__contains = lotId, district__name__contains = name)
+        if(district_vaccine_obj.exists()):
+            district_vaccine_obj = DistrictVaccineData.objects.get(lot__lotId__contains = lotId, district__name__contains = name)
+            district_vaccine_obj.arrivalTimestamp = datetime.datetime.now()
+            district_vaccine_obj.save()
+            VaccineLot.objects.filter(lotId = lotId).update(status = "atDistrict")
+            return redirect("district_dash",name)    
+    return redirect("district_dash",name)
+
+def send_to_center(request,name):
+    if verify(request,"district",name):
+        print("send")
+        error = ""
+        centers = Center.objects.filter(district__name__contains = name)
+        if request.method == "POST":
+            center_names = request.POST.getlist('centers')
+            lot_quantities = request.POST.getlist('quantities')
+            center_quantities = list(zip(center_names,lot_quantities))
+            error = ""
+            count = 0
+            for center_name,lot_quantity in center_quantities:
+                print(center_name+" "+str(lot_quantity))
+                if(int(lot_quantity) > 0):
+                    count = int(lot_quantity)
+                    while count != 0:
+                        lots_count = DistrictVaccineData.objects.filter(district__name__contains = name, lot__status__contains = "atDistrict").count()
+                        if(lots_count > 0):
+                            district_lot_obj = DistrictVaccineData.objects.filter(district__name__contains = name, lot__status__contains = "atDistrict")[0]
+                            lot = district_lot_obj.lot
+                            district_lot_obj.departureTimestamp = datetime.datetime.now()
+                            district_lot_obj.save()
+                            VaccineLot.objects.filter(lotId = lot.lotId).update(status = "transitToCenter")
+                            center = Center.objects.get(name = center_name)
+                            center_vaccine_obj = CenterVaccineData.objects.create(lot = lot, center=center)
+                            center_vaccine_obj.save()
+                            count -= 1
+                        else:
+                            print("hello")
+                            error = "Quantities were assigned upto center: " + center_name 
+                            break
+
+
+        quantity_available = DistrictVaccineData.objects.filter(district__name__contains = name, lot__status__contains = "atDistrict").count()
+        context = {"name":name,"centers":centers,"quantity_available":quantity_available,"error":error}
+        return render(request,"send_to_center.html",context)
+    return redirect("district_dash",name)
+
+
+@login_required
+def center_dash(request,name):
+    if name=="":
+        return redirect('dashboard')
+    if verify(request,"center",name):
+        center_obj=Center.objects.get(name=name)
+        #dist = AccessControlListDistrict.objects.get(person = request.user,district=district_obj[0])
+        #dist_ID = dist.district
+        vaccine_lots = CenterVaccineData.objects.filter(center = center_obj)
+        return render(request,'center_dash.html',{'vaccine_lots':vaccine_lots,'name':name})
     else:
-        return redirect("district_dash",name)
+        return redirect('dashboard')
+
+@login_required
+def updateArrivalTimeCenter(request, name, lotId):
+    if verify(request,"center",name):
+        center_vaccine_obj = CenterVaccineData.objects.filter(lot__lotId__contains = lotId, center__name__contains = name)
+        if(center_vaccine_obj.exists()):
+            center_vaccine_obj = CenterVaccineData.objects.get(lot__lotId__contains = lotId, center__name__contains = name)
+            center_vaccine_obj.arrivalTimestamp = datetime.datetime.now()
+            center_vaccine_obj.save()
+            VaccineLot.objects.filter(lotId = lotId).update(status = "atCenter")
+            return redirect("center_dash",name)    
+    return redirect("center_dash",name)
 
 
+def registerForVaccinationDistrictForm(request):
+    districts = District.objects.all()
+    context = {"districts":districts}
+    if request.method == "POST":
+        district_name = request.POST["district"]
+        return redirect("registerForVaccination.html",district_name)
+    return render(request,"registerForVaccinationDistrictForm.html",context)
 
 
+def registerForVaccination(request,district_name):
+    centers = Center.objects.filter(district__name__contains = district_name)
+    if request.method == "POST":
+        return redirect("index.html")
+    context={"district_name":district_name,"centers":centers}
+    return render(request,"registerForVaccination.html",context)
 
 
 

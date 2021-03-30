@@ -6,8 +6,10 @@ from django.conf import settings
 
 urlpatterns = [
     path('', views.index,name="index"),
-    path('admin_dashboard',views.admin_dashboard,name='admin_dashboard'),
+    path('send_to_district',views.send_to_district,name='send_to_district'),
     path('register', views.register_user,name="register"),
+    path('registerForVaccinationDistrictForm', views.registerForVaccinationDistrictForm,name="registerForVaccinationDistrictForm"),
+    path('registerForVaccination/district/<str:district_name>', views.registerForVaccination,name="registerForVaccination"),
     # path('centeradd_upload',views.centeradd_upload,name='centeradd_upload'),
     # path('loggedin/<district_or_center>/<name>/',views.loggedin,name='loggedin'),
     path('login',views.login_gen,name='login_gen'),
@@ -16,9 +18,10 @@ urlpatterns = [
 
     path('dashboard/district/<name>/',views.district_dash,name='district_dash'),
     path('district/<str:name>/updateArrivalTimeDistrict/<int:lotId>/',views.updateArrivalTimeDistrict,name='updateArrivalTimeDistrict'),
-
+    path('district/<str:name>/send_to_center',views.send_to_center,name="send_to_center"),
 
     path('dashboard/center/<name>/',views.center_dash,name='center_dash'),
+    path('center/<str:name>/updateArrivalTimeCenter/<int:lotId>/',views.updateArrivalTimeCenter,name='updateArrivalTimeCenter'),
     path('dashboard/',views.dashboard,name='dashboard'),
 ]
 

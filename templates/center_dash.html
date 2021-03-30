@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+    
+        <table class="table">
+        <thead>
+            <tr>
+            <th scope="col">Lot ID</th>
+            <th scope="col">Arrival Time</th>
+            <th scope="col">Count Of Doses Consumed</th>
+            <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for lot in vaccine_lots %}
+            <tr>
+            <th scope="row">{{ lot.lot.lotId }}</th>
+            <td>{{lot.arrivalTimestamp}}</td>
+            <td>{{lot.countOfDosesConsumed}}</td>
+            <td><a href="/center/{{name}}/updateArrivalTimeCenter/{{ lot.lot.lotId }}"><button type="button">Update Arrival</button></a>
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+
+{% endblock content %}
