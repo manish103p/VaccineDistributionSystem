@@ -16,6 +16,7 @@ def index(request):
     # VaccineLot.objects.bulk_create(objs,batch_size=40)
     return render(request,"index.html")
 
+hi = 1
 
 def register_user(request):
     if request.user.is_authenticated:
