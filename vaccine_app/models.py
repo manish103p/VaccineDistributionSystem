@@ -110,6 +110,7 @@ class Center(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE, related_name="Center")
     # userName = models.CharField(max_length=255)
     name = models.CharField(max_length=255, unique=True)
+    maxCountPerDate = models.IntegerField(default=0)
     # password = models.CharField(max_length=20)
     def __str__(self):
         return str(self.centerPrimaryKey)+self.name
