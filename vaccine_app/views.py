@@ -454,9 +454,21 @@ def center_dash(request,name):
         #dist = AccessControlListDistrict.objects.get(person = request.user,district=district_obj[0])
         #dist_ID = dist.district
         vaccine_lots = CenterVaccineData.objects.filter(center = center_obj)
-        return render(request,'center_dash.html',{'vaccine_lots':vaccine_lots,'name':name})
+        return render(request,'center_dash.html',{'center_obj':center_obj,'vaccine_lots':vaccine_lots,'name':name})
     else:
         return redirect('dashboard')
+
+@login_required
+def updateMaxCountPerDate(request, name):
+    if verify(request,"center",name):
+        center_obj = Center.objects.filter(name=name)
+        if(center_obj.exists()):
+            if request.method == "POST":
+                maxCountPerDate = request.POST["max_count"]
+            center_obj.update(maxCountPerDate = maxCountPerDate)
+            return redirect("center_dash",name)
+    return redirect("center_dash",name)
+
 
 @login_required
 def updateArrivalTimeCenter(request, name, lotId):
@@ -469,6 +481,14 @@ def updateArrivalTimeCenter(request, name, lotId):
             VaccineLot.objects.filter(lotId = lotId).update(status = "atCenter")
             return redirect("center_dash",name)    
     return redirect("center_dash",name)
+
+@login_required
+def recieverVaccination(request, name):
+    return render(request,"recieverVaccination.html")
+
+
+
+
 
 
 def registerForVaccinationDistrictForm(request):
@@ -483,13 +503,18 @@ def registerForVaccinationDistrictForm(request):
     print(district_centers)
     if request.method == "POST":
         district_center = request.POST["district_center"]
-        district_name,center_name = district_center.split("-")
-        return redirect("registerForVaccination",district_name,center_name)
+        district_center_name = str(district_center).split("-")
+        district_name = district_center_name[0]
+        center_name = district_center_name[1]
+        print(district_name)
+        print(center_name)
+        return redirect("registerForVaccination",district_name,str(center_name))
     context = {"district_centers":district_centers}
     return render(request,"registerForVaccinationDistrictForm.html",context)
 
 
 def registerForVaccination(request,district_name,center_name):
+    
     error = ""
     if request.method == "POST":
         if Center.objects.filter(name = center_name).exists():
@@ -501,15 +526,24 @@ def registerForVaccination(request,district_name,center_name):
                 full_name = request.POST["name"]
                 contactNumber = request.POST["contactNumber"]
                 address = request.POST["address"]
-                date_of_vaccination = datetime.datetime.now()
-                reciever_obj = Receiver.objects.create(aadharNumber = aadharNumber, center = center , name = full_name, contactNumber = contactNumber, address = address, appointmentDate = date_of_vaccination)
+                appointment_date = request.POST["appointment_date"]
+                reciever_obj = Receiver.objects.create(aadharNumber = aadharNumber, center = center , name = full_name, contactNumber = contactNumber, address = address, appointmentDate = appointment_date)
                 reciever_obj.save()
                 error = "Congratulations...You have been registered!!!"
         else:
             error = "Center does not exists"
-            
-            
-    context={"district_name":district_name,"center_name":center_name,"error":error}
+         
+    min_date = datetime.date.today()
+    min_date = min_date + datetime.timedelta(days=7)
+    print(center_name)
+    while(True): 
+        if(Receiver.objects.filter(center__name__contains = center_name, appointmentDate = min_date).count() < Center.objects.get(name = center_name).maxCountPerDate):
+            break  
+        min_date = min_date + datetime.timedelta(days=1)
+    print(center_name + "1")
+    print(datetime.date.today())  
+    print(min_date)
+    context={"district_name":district_name,"center_name":center_name,"min_date_for_registration":str(min_date),"error":error}
     return render(request,"registerForVaccination.html",context)
 
 

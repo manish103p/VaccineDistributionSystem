@@ -21,7 +21,11 @@ urlpatterns = [
     path('district/<str:name>/send_to_center',views.send_to_center,name="send_to_center"),
 
     path('dashboard/center/<name>/',views.center_dash,name='center_dash'),
+    path('center/<str:name>/updateMaxCountPerDate/',views.updateMaxCountPerDate,name='updateMaxCountPerDate'),
     path('center/<str:name>/updateArrivalTimeCenter/<int:lotId>/',views.updateArrivalTimeCenter,name='updateArrivalTimeCenter'),
+    path('center/<str:name>/recieverVaccination/',views.recieverVaccination,name='recieverVaccination'),
+
+
     path('dashboard/',views.dashboard,name='dashboard'),
 ]
 
