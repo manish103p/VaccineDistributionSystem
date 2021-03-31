@@ -472,25 +472,32 @@ def updateArrivalTimeCenter(request, name, lotId):
 
 
 def registerForVaccinationDistrictForm(request):
-    districts = District.objects.all()
-    context = {"districts":districts}
+    districts = District.objects.all().order_by("name")
+    ########
+    district_centers = []
+    centers = Center.objects.all()
+    for district in districts:
+        for center in centers:
+            if(center.district.name == district.name):
+                district_centers.append(district.name + "-" +center.name)
+    print(district_centers)
     if request.method == "POST":
-        district_name = request.POST["district"]
-        return redirect("registerForVaccination",district_name)
+        district_center = request.POST["district_center"]
+        district_name,center_name = district_center.split("-")
+        return redirect("registerForVaccination",district_name,center_name)
+    context = {"district_centers":district_centers}
     return render(request,"registerForVaccinationDistrictForm.html",context)
 
 
-def registerForVaccination(request,district_name):
-    centers = Center.objects.filter(district__name__contains = district_name)
+def registerForVaccination(request,district_name,center_name):
     error = ""
     if request.method == "POST":
-        aadharNumber = request.POST["aadharNumber"]
-        if Receiver.objects.filter(aadharNumber = aadharNumber).exists():
-            error = "Registration with the aadhar number already exists"
-        else:
-            center_name = request.POST["center"]
-            if Center.objects.filter(name = center_name).exists():
-                center = Center.objects.get(name = center_name)
+        if Center.objects.filter(name = center_name).exists():
+            center = Center.objects.get(name = center_name)
+            aadharNumber = request.POST["aadharNumber"]
+            if Receiver.objects.filter(aadharNumber = aadharNumber).exists():
+                error = "Registration with the aadhar number already exists"
+            else:
                 full_name = request.POST["name"]
                 contactNumber = request.POST["contactNumber"]
                 address = request.POST["address"]
@@ -498,11 +505,11 @@ def registerForVaccination(request,district_name):
                 reciever_obj = Receiver.objects.create(aadharNumber = aadharNumber, center = center , name = full_name, contactNumber = contactNumber, address = address, appointmentDate = date_of_vaccination)
                 reciever_obj.save()
                 error = "Congratulations...You have been registered!!!"
-            else:
-                error = "Center does not exists"
+        else:
+            error = "Center does not exists"
             
             
-    context={"district_name":district_name,"centers":centers,"error":error}
+    context={"district_name":district_name,"center_name":center_name,"error":error}
     return render(request,"registerForVaccination.html",context)
 
 

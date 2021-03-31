@@ -1,23 +1,23 @@
 {% extends 'base.html' %} 
 {% load static %}
 {% block content %}
-
+<script src="{% static 'js/registerForVaccination.js' %}"></script>
 <div id="signupwarning" class="warning">
     {% if error %}
-    <center><div class="alert alert-primary" role="alert">
+    <center><div id="signupwarningDiv" class="alert alert-primary" role="alert">
         {{error}}
-    </div></center>
-        
+    </div></center> 
     {% endif %}
 </div>
-<form action="/registerForVaccination/district/{{district_name}}" method="POST" style="margin:50px 100px;" onsubmit="return validateRegistration()" name="registerForVaccinationForm" id="registerForVaccinationForm">
+<form onsubmit="return validateRegistration()" action="/registerForVaccination/{{district_name}}/{{center_name}}" method="POST" style="margin:50px 100px;" name="registerForVaccinationForm" id="registerForVaccinationForm">
    {% csrf_token %}
         
-        <h3>{{ district_name }} </h3>
+        <h3>{{ district_name }}</h3>
+        <h5>{{ center_name }}</h5>
         <div class="form-row">
             <div class="form-group col-md-12">
               <label for="name">Full Name </label>
-              <input type="text" class="form-control" id="name" name="name" placeholder="Enter Your Name" maxlength="255">
+              <input type="text" class="form-control" id="name" name="name" placeholder="Enter Your Name" minlength="2" maxlength="255">
             </div>
         </div>
 
@@ -40,20 +40,7 @@
               <label for="address"> Address </label>
               <input type="text" class="form-control" id="address" name="address" placeholder="Enter your Address" maxlength="1000">
             </div>
-        </div>   
-
-        <div class="form-row">
-            <div class="form-group col-md-12">
-            <label for="exampleFormControlSelect1">Select Center </label>
-            <select class="form-control" name="center">
-                <option value="-1" selected>Select the Center</option>
-                {% for center in centers %}
-                <option value="{{ center.name }}">{{ center.name }}</option>
-                {% endfor %}
-            </select>
-            </div>
-        </div>
-     
+        </div>        
         
         <div class="form-row">
             <div class="form-group col-md-12">
@@ -63,6 +50,6 @@
         </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-<script src="{% static 'js/registerForVaccination.js' %}"></script>
+
 {% endblock %}
 

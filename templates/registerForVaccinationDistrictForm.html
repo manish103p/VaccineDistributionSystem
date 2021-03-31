@@ -3,11 +3,11 @@
 <form action="/registerForVaccinationDistrictForm" method="POST" style="margin:100px 200px;">
     {% csrf_token %}
     <div class="form-group">
-        <b><label for="exampleFormControlSelect1">Select District</label></b>
-        <select class="form-control" name="district">
+        <b><label for="exampleFormControlSelect1">Select Center</label></b>
+        <select class="form-control" name="district_center">
             <option value="" selected>Open this select menu</option>
-            {% for district in  districts %}
-            <option value="{{ district.name }}">{{ district.name }}</option>
+            {% for district_center in  district_centers %}
+            <option value="{{ district_center }}">{{ district_center }}</option>
             {% endfor %}
         </select><br>
     </div>
