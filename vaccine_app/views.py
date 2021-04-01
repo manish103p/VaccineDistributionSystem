@@ -217,6 +217,9 @@ def dashboard(request):
             center_objs=Center.objects.filter(district=district.district)
             for center in center_objs:
                 center_name.append(center.name)
+        if center_access.count()!=0:
+            for center in center_access:
+                center_name.append(center.center.name)
         return render(request,'dashboard.html',{'centers':center_name,'districts':district_name})
 
 
