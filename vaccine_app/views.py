@@ -357,8 +357,7 @@ def district_dash(request,name):
         return redirect('dashboard')
 
 
-
-@login_required
+@login_required(login_url="admin:login")
 def send_to_district(request):
     if request.user.is_superuser:
         #if request.method == "POST":
@@ -391,7 +390,7 @@ def send_to_district(request):
                             break
         quantity_available = VaccineLot.objects.filter(status = "produced").count()
         context = {"districts":districts,"quantity_available":quantity_available,"error":error}
-        return render(request,"send_to_district.html",context)
+        return render(request,"admin/send_to_district.html",context)
     return redirect("admin")
 
 
