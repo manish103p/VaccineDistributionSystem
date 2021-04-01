@@ -2,18 +2,22 @@
 {% load static %}
 {% block content %}
 <script src="{% static 'js/registerForVaccination.js' %}"></script>
-<div id="signupwarning" class="warning">
-    {% if error %}
-    <center><div id="signupwarningDiv" class="alert alert-primary" role="alert">
-        {{error}}
-    </div></center> 
-    {% endif %}
-</div>
+
+        <center><div id="signupwarning" class="warning alert alert-primary">
+            {% if error %}
+                {{error}}
+        {% endif %}
+        </div></center>
+
+        
+
+
 <form onsubmit="return validateRegistration()" action="/registerForVaccination/{{district_name}}/{{center_name}}" method="POST" style="margin:50px 100px;" name="registerForVaccinationForm" id="registerForVaccinationForm">
    {% csrf_token %}
-        
+   
         <h3>{{ district_name }}</h3>
         <h5>{{ center_name }}</h5>
+        
         <div class="form-row">
             <div class="form-group col-md-12">
               <label for="name">Full Name </label>

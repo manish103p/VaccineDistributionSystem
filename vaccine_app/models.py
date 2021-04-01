@@ -79,6 +79,7 @@ class VaccineLot(models.Model):
     status=models.CharField(max_length = 20, choices = lot_status, default = 'produced')
     productionTimestamp = models.DateTimeField(auto_now_add=True)
     departureTimestamp = models.DateTimeField(blank = True, null=True, default=None)
+    countOfDosesConsumed = models.IntegerField(default = 0)
     def __str__(self):
         return str(self.lotId) + self.status
 
@@ -119,7 +120,6 @@ class CenterVaccineData(models.Model):
     center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name="centerVaccine")
     lot = models.OneToOneField(VaccineLot, on_delete=models.CASCADE, related_name="centerVaccine")
     arrivalTimestamp = models.DateTimeField(blank = True, null=True, default=None)
-    countOfDosesConsumed = models.IntegerField(default = 0)
     def __str__(self):
         return self.center.name + str(self.lot.lotId) + self.lot.status
 

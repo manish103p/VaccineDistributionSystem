@@ -16,7 +16,6 @@ def index(request):
     # VaccineLot.objects.bulk_create(objs,batch_size=40)
     return render(request,"index.html")
 
-hi = 1
 
 def register_user(request):
     if request.user.is_authenticated:
@@ -484,9 +483,31 @@ def updateArrivalTimeCenter(request, name, lotId):
     return redirect("center_dash",name)
 
 @login_required
-def recieverVaccination(request, name):
-    return render(request,"recieverVaccination.html")
-
+def receiverVaccination(request, name):
+    error = ""
+    if(verify(request,'center',name)):
+        if request.method == 'POST':
+            aadharNumber = request.POST['aadharNumber']
+            receiver_obj = Receiver.objects.filter( aadharNumber = aadharNumber)
+            if(receiver_obj.exists()): 
+                maxCountOfDosesPerLot = 500
+                lots = VaccineLot.objects.filter(status = 'atCenter', centerVaccine__center__name__in = name)
+                if(lots.exists()):
+                    for lot in lots:
+                        countOfDosesConsumed = lot.countOfDosesConsumed
+                        if(countOfDosesConsumed < maxCountOfDosesPerLot):
+                            receiver_obj = Receiver.objects.get(aadharNumber = aadharNumber)
+                            receiver_vaccination_obj = ReceiverVaccination.objects.create(lot = lot, receiver = receiver_obj)
+                            receiver_vaccination_obj.save()
+                            lot.countOfDosesConsumed = countOfDosesConsumed+1
+                            lot.save()
+                            break      
+                else:
+                    error = "Lot not available" 
+            else:
+                error = "Receiver does not exists"             
+        return render(request,"recieverVaccination.html",{'name':name,'error':error})
+    return redirect("dashboard")
 
 
 

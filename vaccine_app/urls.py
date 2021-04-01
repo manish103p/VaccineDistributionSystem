@@ -23,7 +23,7 @@ urlpatterns = [
     path('dashboard/center/<name>/',views.center_dash,name='center_dash'),
     path('center/<str:name>/updateMaxCountPerDate/',views.updateMaxCountPerDate,name='updateMaxCountPerDate'),
     path('center/<str:name>/updateArrivalTimeCenter/<int:lotId>/',views.updateArrivalTimeCenter,name='updateArrivalTimeCenter'),
-    path('center/<str:name>/recieverVaccination/',views.recieverVaccination,name='recieverVaccination'),
+    path('center/<str:name>/receiverVaccination/',views.receiverVaccination,name='receiverVaccination'),
 
 
     path('dashboard/',views.dashboard,name='dashboard'),
