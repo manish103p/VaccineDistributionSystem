@@ -497,7 +497,8 @@ def receiverVaccination(request, name):
             receiver_obj = Receiver.objects.filter( aadharNumber = aadharNumber)
             if(receiver_obj.exists()): 
                 maxCountOfDosesPerLot = 500
-                lots = VaccineLot.objects.filter(status = 'atCenter', centerVaccine__center__name__in = name)
+                center_obj = Center.objects.filter(name = name)
+                lots = VaccineLot.objects.filter(status = 'atCenter', centerVaccine__center__in = center_obj)
                 if(lots.exists()):
                     for lot in lots:
                         countOfDosesConsumed = lot.countOfDosesConsumed
@@ -511,7 +512,8 @@ def receiverVaccination(request, name):
                 else:
                     error = "Lot not available" 
             else:
-                error = "Receiver does not exists"             
+                error = "Receiver does not exists"
+            print(error)             
         return render(request,"recieverVaccination.html",{'name':name,'error':error})
     return redirect("dashboard")
 
