@@ -50,8 +50,11 @@ def register_user(request):
                     return redirect('dashboard')
 
             if district_name != "_":
+                print("abcd")
                 district_obj=District.objects.get(name=district_name)
+                print(key)
                 if key==district_obj.districtId.urn[9:]:
+                    print("abcd")
                     user=User.objects.create(email=registerForm.cleaned_data["email"])
                     user.aadharNumber=registerForm.cleaned_data["aadharNumber"]
                     user.first_name=registerForm.cleaned_data["first_name"]
@@ -67,6 +70,7 @@ def register_user(request):
                     user.save()
                     district_obj.districtId=uuid.uuid4()
                     district_obj.save()
+                    print("SAved")
                     return redirect('dashboard')
             # user.save()
 
