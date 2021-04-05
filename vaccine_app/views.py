@@ -581,9 +581,8 @@ def registerForVaccination(request,district_name,center_name):
 def currentStatus(request):
     districts = District.objects.values()
     centers = Center.objects.values()
-    lots_prod = VaccineLot.objects.filter( status = 'produced')
-    print(lots_prod)
-    context = {"districts" : districts, "centers" : centers, "lot_prod" : lots_prod}
+    lots = VaccineLot.objects.all()
+    context = {"districts" : districts, "centers" : centers, "lots" : lots}
     return render(request, "status2.html", context)
 
 

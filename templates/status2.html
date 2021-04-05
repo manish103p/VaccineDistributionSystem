@@ -1,5 +1,28 @@
 {% extends 'base.html' %}
 {% block content %}
+{% load static %}
+
+<style>
+    .grid-container {
+        display: grid;
+        }
+        
+        
+        
+        .grid-container--fill {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        }
+    
+        .grid-element {
+            background-color: blue;
+            padding: 20px;
+            color: white;
+            border: 1px solid #fff;
+            }
+            
+            
+</style>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <div class="accordion" id="accordionExample">
 
@@ -10,20 +33,42 @@
                 <h5 class="mb-0" >
                   {{ district.name }}
                   <button type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#{{ district.name }}DistrictModal">View</button>
-                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#{{district.name}}DistrictCollapse" aria-expanded="false" aria-controls="{{district.name}}collapse">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#{{district.name}}DistrictCollapse" aria-expanded="false" aria-controls="{{district.name}}DistrictCollapse">
                     <i class="fa fa-plus-square" aria-hidden="true"></i>
                   </button>
                 </h5>
               </div>
               <!--modal-->
-              <div id="{{district.name}}DistrictModal" class="modal fade modalText" role="dialog">
+              <div id="{{district.name}}DistrictModal" class="modal fade modalText" role="dialog" style="text-transform: capitalize;">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
                       <h4 class="modal-title">{{district.name}}</h4>
                     </div>
                     <div class="modal-body">
-                      <p>Some text in the modal.</p>
+                      To  be arrived : 
+                      <div class="grid-container grid-container--fill">
+                        {% for lot in lots %}
+                            {% if lot.districtVaccine.district.name == district.name %}
+                                {% if lot.status == 'transitToDistrict' %}
+                                
+                                    <div class="grid-element">
+                                    {{lot.lotID}}
+                                    </div>
+                                
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                      </div>
+                      <br>
+                      Arrived :  
+                      {% for lot in lots %}
+                        {% if lot.districtVaccine.district.name == district.name %}
+                            {% if lot.status == 'atDistrict' %}
+                                {{lot.lotId}},
+                            {% endif %}
+                        {% endif %}
+                      {% endfor %}
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -33,7 +78,7 @@
               </div>
               <div id="{{district.name}}DistrictCollapse" class="collapse" aria-labelledby="headingTwo" >
 
-                <div class="card-body">
+                <div class="card-body" style="text-transform: capitalize;">
 
 
                   <table class="table ">
@@ -41,7 +86,7 @@
                       <tr>
                         <th scope="col">Center Id</th>
                         <th scope="col">Center Name</th>
-                        <th scope="col">First</th>
+                        <th scope="col"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -59,7 +104,23 @@
                                 <h4 class="modal-title">{{center.name}}</h4>
                               </div>
                               <div class="modal-body">
-                                <p>Some text in the modal.</p>
+                                To  be arrived :  
+                                {% for lot in lots %}
+                                    {% if lot.centerVaccine.center.name == center.name %}
+                                        {% if lot.status == 'transitToCenter' %}
+                                            {{lot.lotId}},
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                                <br>
+                                Arrived :  
+                                {% for lot in lots %}
+                                    {% if lot.centerVaccine.center.name == center.name %}
+                                        {% if lot.status == 'atCenter' %}
+                                            {{lot.lotId}},
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
                               </div>
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
