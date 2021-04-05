@@ -134,37 +134,21 @@
               content: '';
               border-color: #94a0b4;
             }
+
+            .modalText{
+              color:black;
+            }
         </style>
 
 <nav class="nav">
 			<ul>
 				<li>
-					<a data-toggle="modal" data-target="#myModal">Mega Center<br>{{lots.lotID}}</a>
-					<ul>
-                        {% for districts in district_names %}
-						<li>
-							<a data-toggle="modal" data-target="#myModal">{{districts.name}}</a>
-                            <ul>
-                                {% for centers in center_names %}
-                                {% if centers.district_id == districts.districtPrimaryKey %}
-                                <li>
-                                    <a data-toggle="modal" data-target="#myModal">{{centers.name}}</a>
-                                </li>
-                                {% endif %}
-                                {% endfor %}
-                            </ul>
-                            {% endfor %}
-						</li>
-                    </ul>
-                </li>
-            </ul>
-		</nav>
-
-        <div id="myModal" class="modal fade" role="dialog">
+					<a data-toggle="modal" data-target="#megaCenterModal">Mega Center<br></a>
+          <div id="megaCenterModal" class="modal fade modalText" role="dialog">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h4 class="modal-title">Modal Header</h4>
+                  <h4 class="modal-title">Mega Center</h4>
                 </div>
                 <div class="modal-body">
                   <p>Some text in the modal.</p>
@@ -173,9 +157,59 @@
                   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
               </div>
-          
             </div>
-          </div>
+          </div>      
+					<ul>
+            {% for districts in district_names %}
+						<li>
+							<a data-toggle="modal" data-target="#{{districts.name}}DistrictModal">{{districts.name}}</a>
+              <div id="{{districts.name}}DistrictModal" class="modal fade modalText" role="dialog">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title">{{districts.name}}</h4>
+                    </div>
+                    <div class="modal-body">
+                      <p>Some text in the modal.</p>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+                  <ul>
+                      {% for centers in center_names %}
+                          {% if centers.district_id == districts.districtPrimaryKey %}
+                          <li>
+                              <a data-toggle="modal" data-target="#{{centers.name}}CenterModal">{{centers.name}}</a>
+                              <div id="{{centers.name}}CenterModal" class="modal fade modalText" role="dialog">
+                                <div class="modal-dialog">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h4 class="modal-title">{{centers.name}}</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                      <p>Some text in the modal.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                          </li>
+                          
+                          {% endif %}
+                      {% endfor %}
+                  </ul>                
+						</li>
+            {% endfor %}
+            </ul>
+          </li>
+      </ul>
+		</nav>
+    
     </body>
     </html>
 {% endblock content %}
