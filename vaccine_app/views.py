@@ -583,7 +583,7 @@ def currentStatus(request):
     centers = Center.objects.values()
     lots_prod = VaccineLot.objects.filter( status = 'produced')
     print(lots_prod)
-    context = {"district_names" : districts, "center_names" : centers, "lot_prod" : lots_prod}
+    context = {"districts" : districts, "centers" : centers, "lot_prod" : lots_prod}
     return render(request, "status2.html", context)
 
 
