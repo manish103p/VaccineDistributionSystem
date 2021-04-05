@@ -13,7 +13,7 @@
     }
     
     .grid-element {
-            background-color: blue;
+            background-color: black;
             padding: 5px;
             color: white;
             border: 1px solid #fff;
@@ -24,8 +24,8 @@
             
 </style>
 
-        <div class="accordion" id="accordionExample">
-            <div class="card" style="text-transform: uppercase;">
+        <div class="accordion" id="accordionExample" >
+            <div class="card" style="text-transform: capitalize;">
                 <div class="card-header" id="headingTwo">
                   <h5 class="mb-0" >
                     Mega Center
@@ -60,13 +60,13 @@
                   </div>
 
             {% for district in districts %}
-            <div class="card" style="text-transform: uppercase;">
+            <div class="card" >
               <div class="card-header" id="headingTwo">
                 <h5 class="mb-0" >
                   {{ district.name }}
                   <button type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#{{ district.name }}DistrictModal">View</button>
                   <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#{{district.name}}DistrictCollapse" aria-expanded="false" aria-controls="{{district.name}}DistrictCollapse">
-                    <i class="fa fa-plus-square" aria-hidden="true"></i>
+                    <i class="fa fa-plus-square" aria-hidden="true" style="color:black;"></i>
                   </button>
                 </h5>
               </div>
@@ -79,13 +79,13 @@
                     </div>
                     <div class="modal-body">
                       
-                      To  be arrived : 
+                      To  be arrived :  <span class="lotsCountSentToDistrict"></span>
                       <div class="grid-container grid-container--fill">
                         {% for lot in lots %}
                             {% if lot.districtVaccine.district.name == district.name %}
                                 {% if lot.status == 'transitToDistrict' %}
                                 
-                                    <div class="grid-element">
+                                    <div class="grid-element sentToDistrict">
                                     {{lot.lotId}}
                                     </div>
                                 
@@ -143,12 +143,12 @@
                               </div>
                               <div class="modal-body">
                                 
-                                To  be arrived :  
+                                To  be arrived : <span class="lotsCountSentToCenter"></span> 
                                 <div class="grid-container grid-container--fill">
                                 {% for lot in lots %}
                                     {% if lot.centerVaccine.center.name == center.name %}
                                         {% if lot.status == 'transitToCenter' %}
-                                            <div class="grid-element">
+                                            <div class="grid-element sentToCenter">
                                               {{lot.lotId}}
                                             </div>
                                         {% endif %}
@@ -195,10 +195,12 @@
             var district, center;
             for(var i=0;i<districtModals.length;i++){
                 district = districtModals[i];
+                district.getElementsByClassName("lotsCountSentToDistrict")[0].innerHTML =district.getElementsByClassName("sentToDistrict").length;
                 district.getElementsByClassName("lotsCountAtDistrict")[0].innerHTML =district.getElementsByClassName("arrivedAtDistrict").length;
             }
             for(var i=0;i<centerModals.length;i++){
                 center = centerModals[i];
+                center.getElementsByClassName("lotsCountSentToCenter")[0].innerHTML =center.getElementsByClassName("sentToCenter").length;
                 center.getElementsByClassName("lotsCountAtCenter")[0].innerHTML =center.getElementsByClassName("arrivedAtCenter").length;
             }
 
