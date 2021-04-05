@@ -27,7 +27,39 @@
 </style>
 
         <div class="accordion" id="accordionExample">
+            <div class="card" style="text-transform: uppercase;">
+                <div class="card-header" id="headingTwo">
+                  <h5 class="mb-0" >
+                    Mega Center
+                    <button type="button" class="btn btn-primary" style="float: right;" data-toggle="modal" data-target="#MegaCenterModal">View</button>
+                  </h5>
+                </div>
 
+                <div id="MegaCenterModal" class="modal fade modalText" role="dialog" style="text-transform: capitalize;">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h4 class="modal-title">Mega Center</h4>
+                        </div>
+                        <div class="modal-body">
+                          Produced : 
+                          <div class="grid-container grid-container--fill">
+                            {% for lot in lots %}
+                                    {% if lot.status == 'produced' %}
+                                        <div class="grid-element">
+                                        {{lot.lotId}}
+                                        </div>
+                                {% endif %}
+                            {% endfor %}
+                          </div>
+                          <br>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
 
             {% for district in districts %}
             <div class="card" style="text-transform: uppercase;">
