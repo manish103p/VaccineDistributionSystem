@@ -577,7 +577,14 @@ def registerForVaccination(request,district_name,center_name):
     return render(request,"registerForVaccination.html",context)
 
 
-
+@login_required
+def currentStatus(request):
+    districts = District.objects.values()
+    centers = Center.objects.values()
+    lots_prod = VaccineLot.objects.filter( status = 'produced')
+    print(lots_prod)
+    context = {"district_names" : districts, "center_names" : centers, "lot_prod" : lots_prod}
+    return render(request, "status.html", context)
 
 
 #TODO verify function, clean templates
