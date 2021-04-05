@@ -584,7 +584,7 @@ def currentStatus(request):
     lots_prod = VaccineLot.objects.filter( status = 'produced')
     print(lots_prod)
     context = {"district_names" : districts, "center_names" : centers, "lot_prod" : lots_prod}
-    return render(request, "status.html", context)
+    return render(request, "status2.html", context)
 
 
 #TODO verify function, clean templates
