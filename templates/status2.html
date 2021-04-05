@@ -2,6 +2,7 @@
 {% block content %}
 {% load static %}
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <style>
     .grid-container {
         display: grid;
@@ -10,20 +11,21 @@
         
         
         .grid-container--fill {
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
         }
     
         .grid-element {
             background-color: blue;
-            padding: 20px;
+            padding: 5px;
             color: white;
             border: 1px solid #fff;
+            border-radius: 10px;
+            text-align: center;
             }
             
             
 </style>
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <div class="accordion" id="accordionExample">
 
 
@@ -53,7 +55,7 @@
                                 {% if lot.status == 'transitToDistrict' %}
                                 
                                     <div class="grid-element">
-                                    {{lot.lotID}}
+                                    {{lot.lotId}}
                                     </div>
                                 
                                 {% endif %}
@@ -61,14 +63,18 @@
                         {% endfor %}
                       </div>
                       <br>
-                      Arrived :  
+                      Arrived : 
+                      <div class="grid-container grid-container--fill">
                       {% for lot in lots %}
                         {% if lot.districtVaccine.district.name == district.name %}
                             {% if lot.status == 'atDistrict' %}
-                                {{lot.lotId}},
+                              <div class="grid-element">
+                                {{lot.lotId}}
+                              </div>
                             {% endif %}
                         {% endif %}
                       {% endfor %}
+                      </div>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -76,7 +82,7 @@
                   </div>
                 </div>
               </div>
-              <div id="{{district.name}}DistrictCollapse" class="collapse" aria-labelledby="headingTwo" >
+              <div id="{{district.name}}DistrictCollapse" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
 
                 <div class="card-body" style="text-transform: capitalize;">
 
@@ -90,6 +96,7 @@
                       </tr>
                     </thead>
                     <tbody>
+                      
                       {% for center in centers %}
                       {% if center.district_id == district.districtPrimaryKey %}
                         <tr>
@@ -105,22 +112,30 @@
                               </div>
                               <div class="modal-body">
                                 To  be arrived :  
+                                <div class="grid-container grid-container--fill">
                                 {% for lot in lots %}
                                     {% if lot.centerVaccine.center.name == center.name %}
                                         {% if lot.status == 'transitToCenter' %}
-                                            {{lot.lotId}},
+                                            <div class="grid-element">
+                                              {{lot.lotId}}
+                                            </div>
                                         {% endif %}
                                     {% endif %}
                                 {% endfor %}
+                                </div>
                                 <br>
-                                Arrived :  
+                                Arrived : 
+                                <div class="grid-container grid-container--fill"> 
                                 {% for lot in lots %}
                                     {% if lot.centerVaccine.center.name == center.name %}
                                         {% if lot.status == 'atCenter' %}
-                                            {{lot.lotId}},
+                                            <div class="grid-element">
+                                              {{lot.lotId}}
+                                            </div>
                                         {% endif %}
                                     {% endif %}
                                 {% endfor %}
+                                </div>
                               </div>
                               <div class="modal-footer">
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
