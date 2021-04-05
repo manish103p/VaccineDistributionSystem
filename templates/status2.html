@@ -6,22 +6,20 @@
 <style>
     .grid-container {
         display: grid;
-        }
-        
-        
-        
-        .grid-container--fill {
+    }
+      
+    .grid-container--fill {
         grid-template-columns: repeat(auto-fill, minmax(35px, 1fr));
-        }
+    }
     
-        .grid-element {
+    .grid-element {
             background-color: blue;
             padding: 5px;
             color: white;
             border: 1px solid #fff;
             border-radius: 10px;
             text-align: center;
-            }
+    }
             
             
 </style>
@@ -42,14 +40,14 @@
                           <h4 class="modal-title">Mega Center</h4>
                         </div>
                         <div class="modal-body">
-                          Produced : 
+                          Produced : <span id="megaCenterLotsCount"></span>
                           <div class="grid-container grid-container--fill">
                             {% for lot in lots %}
                                     {% if lot.status == 'produced' %}
-                                        <div class="grid-element">
-                                        {{lot.lotId}}
+                                        <div class="grid-element" name="megaCenter">
+                                          {{lot.lotId}}
                                         </div>
-                                {% endif %}
+                                    {% endif %}
                             {% endfor %}
                           </div>
                           <br>
@@ -80,7 +78,7 @@
                       <h4 class="modal-title">{{district.name}}</h4>
                     </div>
                     <div class="modal-body">
-                      To  be arrived : 
+                      To  be arrived : <span id="toBeArrivedDistrict"></span>
                       <div class="grid-container grid-container--fill">
                         {% for lot in lots %}
                             {% if lot.districtVaccine.district.name == district.name %}
@@ -96,7 +94,7 @@
                       </div>
                       <br>
                       Arrived : 
-                      <div class="grid-container grid-container--fill">
+                      <div class="grid-container grid-container--fill" class="arrivedAtDistrict">
                       {% for lot in lots %}
                         {% if lot.districtVaccine.district.name == district.name %}
                             {% if lot.status == 'atDistrict' %}
@@ -187,4 +185,14 @@
             {% endfor %}
             
           </div>
+
+          <script>
+            var megaCenterCount = document.getElementsByName("megaCenter");
+            
+
+
+           document.getElementById("megaCenterLotsCount").innerHTML = megaCenterCount.length;
+           document.getElementById("toBeArrivedDistrict")
+          </script>
+
 {% endblock content %}
