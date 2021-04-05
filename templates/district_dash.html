@@ -14,7 +14,7 @@
       {% endfor %}
     {% endif %}
 
-        <a href="/district/{{name}}/send_to_center" style="float: right; margin:10px;"><button Type="button" class="btn btn-warning">Send Vaccine to Center</button></a>
+        <a href="/district/{{name}}/send_to_center" style="float: right; margin:10px;"><button Type="button" class="btn btn-primary">Send Vaccine to Center</button></a>
         <form method="POST">
             {% csrf_token %}
             <table>
