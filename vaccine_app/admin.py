@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin
 from .models import VaccineLot, District, DistrictVaccineData, Center, CenterVaccineData, CenterRegestration, Receiver, ReceiverVaccination, AccessControlListCenter,AccessControlListDistrict
 # Register your models here.
 from .models import User
-admin.site.register(VaccineLot)
+
 admin.site.register(District)
 admin.site.register(DistrictVaccineData)
 admin.site.register(Center)
@@ -34,4 +34,21 @@ class UserAdminConfig(UserAdmin):
          ),
     )
 
+
+class VaccineLotConfig(admin.ModelAdmin):
+  search_fields=('lotId','status')
+  list_filter=('status', 'productionTimestamp','departureTimestamp')
+  ordering=('lotId',)
+  list_display=('lotId','status','productionTimestamp','departureTimestamp','countOfDosesConsumed')
+  fieldsets = (
+        ('Edit Values', {'fields': ('status','departureTimestamp','countOfDosesConsumed')}),
+    )
+  add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ( 'status','productionTimestamp','departureTimestamp', 'countOfDosesConsumed')}
+         ),
+    )
+
 admin.site.register(User, UserAdminConfig)
+admin.site.register(VaccineLot, VaccineLotConfig)

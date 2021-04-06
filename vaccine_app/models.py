@@ -89,6 +89,7 @@ class District(models.Model):
     districtId = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     # userName = models.CharField(max_length=255)
     name = models.CharField(max_length=255, unique=True)
+    population = models.IntegerField(default=1)
     # password = models.CharField(max_length=20)
     def __str__(self):
         return self.districtId.urn[9:]+self.name
@@ -112,6 +113,7 @@ class Center(models.Model):
     # userName = models.CharField(max_length=255)
     name = models.CharField(max_length=255, unique=True)
     maxCountPerDate = models.IntegerField(default=0)
+    population = models.IntegerField(default=1)
     # password = models.CharField(max_length=20)
     def __str__(self):
         return str(self.centerPrimaryKey)+self.name

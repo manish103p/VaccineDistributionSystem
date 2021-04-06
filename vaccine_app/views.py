@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 import uuid
 import datetime
+import sys
+from math import floor,ceil
 # Create your views here.
 def index(request):
     # objs = [VaccineLot() for i in range(40)]
@@ -353,16 +355,78 @@ def district_dash(request,name):
         error=[]
         if request.method=="POST":
             nameOfCenter = request.POST['name']
+            population = request.POST['population']
             if Center.objects.filter(name=nameOfCenter).exists():
                 error.append("Center Already Exists")
             else:
-                new_center=Center(name=nameOfCenter,district=district_obj)
+                new_center=Center(name=nameOfCenter,district=district_obj,population=population)
                 new_center.save()
             
         return render(request,'district_dash.html',{'centers':centers, 'error':error, 'vaccine_lots':vaccine_lots,'name':name})
     else:
         return redirect('dashboard')
 
+
+def get_ratio_district():
+    count_of_vaccine_in_produced_state=VaccineLot.objects.filter(status="produced").count()
+    district_obj=District.objects.all()
+    ratio_dict={}
+    if(count_of_vaccine_in_produced_state==0):
+        
+        for district in district_obj.iterator():
+            ratio_dict[district.name]=int(0)
+        return ratio_dict
+    population_dict={}
+    min_value=sys.maxsize
+    max_value=0
+    for district in district_obj.iterator():
+        population_dict[district.name]=int(district.population)
+        if(district.population < min_value):
+            min_value=district.population
+        if(district.population > max_value):
+            max_value=district.population
+    print("I am here")
+    population_ratio_dict={}
+    sum_of_ratio=0
+    if(min_value==0):
+        min_value=1
+
+    print("I am here")
+    for district in district_obj.iterator():
+        population_ratio_dict[district.name]=ceil(district.population/min_value)
+        sum_of_ratio+=population_ratio_dict[district.name]
+    print("I reached")
+    print(population_ratio_dict)
+    if(sum_of_ratio > count_of_vaccine_in_produced_state):
+        while(sum_of_ratio > count_of_vaccine_in_produced_state):
+            quantity_subtract=count_of_vaccine_in_produced_state-sum_of_ratio
+            sum_of_ratio=0
+            count=0
+            for key in population_ratio_dict:
+
+                print(int(population_ratio_dict[key])>0,quantity_subtract<0,quantity_subtract,count<quantity_subtract)
+
+                if(int(population_ratio_dict[key])>0 and count<abs(quantity_subtract)):
+                    population_ratio_dict[key]-=1
+                    count+=1
+                    print(key)
+                    print(population_ratio_dict)
+                sum_of_ratio+=population_ratio_dict[key]
+                # quantity_subtract=count_of_vaccine_in_produced_state-sum_of_ratio
+    print(sum_of_ratio)
+    ratio_multiplication_factor = floor(count_of_vaccine_in_produced_state / sum_of_ratio)
+
+    for district in district_obj:
+        ratio_dict[district.name] = ratio_multiplication_factor * population_ratio_dict[district.name]
+
+    return ratio_dict
+
+
+    # if count is less than district count and if count is less than total sum of ratios
+    
+
+
+    
 
 @login_required(login_url="admin:login")
 def send_to_district(request):
@@ -395,8 +459,20 @@ def send_to_district(request):
                             print("hello")
                             error = "Quantities were assigned upto district: " + district_name 
                             break
+        
+        # Get recommended count
+        ratio=get_ratio_district()
+        ratio_list=[]
+        count_list=[]
+        for district in districts:
+            count_list.append(DistrictVaccineData.objects.filter(district=district, lot__status__contains = "atDistrict").count())
+            ratio_list.append(ratio[district.name])
+
+        
+        
         quantity_available = VaccineLot.objects.filter(status = "produced").count()
-        context = {"districts":districts,"quantity_available":quantity_available,"error":error}
+        print(districts)
+        context = {"districts":zip(districts,zip(ratio_list,count_list)),"quantity_available":quantity_available,"error":error, "ratio":ratio}
         return render(request,"admin/send_to_district.html",context)
     return redirect("admin")
 
@@ -411,6 +487,65 @@ def updateArrivalTimeDistrict(request, name, lotId):
             VaccineLot.objects.filter(lotId = lotId).update(status = "atDistrict")
             return redirect("district_dash",name)    
     return redirect("district_dash",name)
+
+
+
+def get_ratio_center(district):
+    count_of_vaccine_atDistrict_state=DistrictVaccineData.objects.filter(district=district, lot__status__contains = "atDistrict").count()
+    center_obj=Center.objects.filter(district=district)
+    ratio_dict={}
+    if(count_of_vaccine_atDistrict_state==0):
+        
+        for center in center_obj.iterator():
+            ratio_dict[center.name]=int(0)
+        return ratio_dict
+    population_dict={}
+    min_value=sys.maxsize
+    max_value=0
+    for center in center_obj.iterator():
+        population_dict[center.name]=int(center.population)
+        if(center.population < min_value):
+            min_value=center.population
+        if(center.population > max_value):
+            max_value=center.population
+    print("I am here")
+    population_ratio_dict={}
+    sum_of_ratio=0
+    if(min_value==0):
+        min_value=1
+
+    print("I am here")
+    for center in center_obj.iterator():
+        population_ratio_dict[center.name]=ceil(center.population/min_value)
+        sum_of_ratio+=population_ratio_dict[center.name]
+    print("I reached")
+    print(population_ratio_dict)
+    if(sum_of_ratio > count_of_vaccine_atDistrict_state):
+        while(sum_of_ratio > count_of_vaccine_atDistrict_state):
+            quantity_subtract=count_of_vaccine_atDistrict_state-sum_of_ratio
+            sum_of_ratio=0
+            count=0
+            for key in population_ratio_dict:
+
+                print(int(population_ratio_dict[key])>0,quantity_subtract<0,quantity_subtract,count<quantity_subtract)
+
+                if(int(population_ratio_dict[key])>0 and count<abs(quantity_subtract)):
+                    population_ratio_dict[key]-=1
+                    count+=1
+                    print(key)
+                    print(population_ratio_dict)
+                sum_of_ratio+=population_ratio_dict[key]
+                # quantity_subtract=count_of_vaccine_atDistrict_state-sum_of_ratio
+    print(sum_of_ratio)
+    ratio_multiplication_factor = floor(count_of_vaccine_atDistrict_state / sum_of_ratio)
+
+    for center in center_obj:
+        ratio_dict[center.name] = ratio_multiplication_factor * population_ratio_dict[center.name]
+
+    return ratio_dict
+
+
+
 
 def send_to_center(request,name):
     if verify(request,"district",name):
@@ -444,9 +579,17 @@ def send_to_center(request,name):
                             error = "Quantities were assigned upto center: " + center_name 
                             break
 
+        ratio=get_ratio_center(District.objects.get(name = name))
+        ratio_list=[]
+        count_list=[]
+        for center in centers:
+            count_list.append(CenterVaccineData.objects.filter(center=center, lot__status__contains = "atCenter").count())
+            ratio_list.append(ratio[center.name])
+
+        
 
         quantity_available = DistrictVaccineData.objects.filter(district__name__contains = name, lot__status__contains = "atDistrict").count()
-        context = {"name":name,"centers":centers,"quantity_available":quantity_available,"error":error}
+        context = {"name":name,"centers":zip(centers,zip(ratio_list,count_list)),"quantity_available":quantity_available,"error":error}
         return render(request,"send_to_center.html",context)
     return redirect("district_dash",name)
 
