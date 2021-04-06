@@ -573,7 +573,18 @@ def registerForVaccination(request,district_name,center_name):
     print(center_name + "1")
     print(datetime.date.today())  
     print(min_date)
-    context={"district_name":district_name,"center_name":center_name,"min_date_for_registration":str(min_date),"error":error}
+    max_date = min_date + datetime.timedelta(days=7)
+    blocked_dates = []
+    start_date = min_date
+    end_date = max_date
+    delta = datetime.timedelta(days=1)
+
+    while start_date <= end_date:
+        if(Receiver.objects.filter(center__name__contains = center_name, appointmentDate = start_date).count() >= Center.objects.get(name = center_name).maxCountPerDate):
+            blocked_dates.append(str(start_date))
+        start_date += delta
+    print(blocked_dates)
+    context={"district_name":district_name,"center_name":center_name,"min_date_for_registration":str(min_date),"error":error, "max_date_for_registration":str(max_date), 'blocked_dates':blocked_dates}
     return render(request,"registerForVaccination.html",context)
 
 

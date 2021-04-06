@@ -48,11 +48,26 @@
         <div class="form-row">
             <div class="form-group col-md-12">
                 <label for="date-input">Date</label>
-                <input class="form-control" type="date" id="date-input" name="appointment_date" min="{{min_date_for_registration}}">
+                <input class="form-control" type="date" id="date-input" name="appointment_date" min="{{min_date_for_registration}}" max="{{max_date_for_registration}}" onchange="checkDate()" required>
             </div>
         </div>
     <button type="submit" class="btn btn-dark">Submit</button>
 </form>
-
+<script>
+  var blocked_dates_var="{{blocked_dates|safe}}";
+  var blocked_dates = blocked_dates_var.substring(1,blocked_dates_var.length-1).split(", ");
+  
+  function checkDate(){
+    var dateEntered =  String("'"+document.registerForVaccinationForm.appointment_date.value+"'");
+    console.log(dateEntered);
+    for(var i=0; i< blocked_dates.length;i++){
+      console.log(blocked_dates[i])
+      if(blocked_dates[i].localeCompare(String(dateEntered)) == 0){
+        alert("We are sorry, we have reached maximum number of registrations for this day. Kindly choose some other day.");
+        document.registerForVaccinationForm.appointment_date.value = "";
+      }
+    }
+  }
+</script>
 {% endblock %}
 
