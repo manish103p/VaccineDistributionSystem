@@ -414,10 +414,10 @@ def get_ratio_district():
                 sum_of_ratio+=population_ratio_dict[key]
                 # quantity_subtract=count_of_vaccine_in_produced_state-sum_of_ratio
     print(sum_of_ratio)
-    ratio_multiplication_factor = floor(count_of_vaccine_in_produced_state / sum_of_ratio)
-
+    ratio_multiplication_factor = count_of_vaccine_in_produced_state / sum_of_ratio
+    print("ratio_multiplication_factor : ",ratio_multiplication_factor)
     for district in district_obj:
-        ratio_dict[district.name] = ratio_multiplication_factor * population_ratio_dict[district.name]
+        ratio_dict[district.name] = floor(ratio_multiplication_factor * population_ratio_dict[district.name])
 
     return ratio_dict
 
@@ -537,10 +537,10 @@ def get_ratio_center(district):
                 sum_of_ratio+=population_ratio_dict[key]
                 # quantity_subtract=count_of_vaccine_atDistrict_state-sum_of_ratio
     print(sum_of_ratio)
-    ratio_multiplication_factor = floor(count_of_vaccine_atDistrict_state / sum_of_ratio)
+    ratio_multiplication_factor = count_of_vaccine_atDistrict_state / sum_of_ratio
 
     for center in center_obj:
-        ratio_dict[center.name] = ratio_multiplication_factor * population_ratio_dict[center.name]
+        ratio_dict[center.name] = floor(ratio_multiplication_factor * population_ratio_dict[center.name])
 
     return ratio_dict
 
