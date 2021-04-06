@@ -16,7 +16,11 @@ from math import floor,ceil
 def index(request):
     # objs = [VaccineLot() for i in range(40)]
     # VaccineLot.objects.bulk_create(objs,batch_size=40)
-    return render(request,"index.html")
+    lots = VaccineLot.objects.all()
+    total_consumed = 0
+    for lot in lots:
+        total_consumed += lot.countOfDosesConsumed
+    return render(request,"index.html", {"total_doses_consumed":total_consumed})
 
 
 def register_user(request):
@@ -713,15 +717,17 @@ def registerForVaccination(request,district_name,center_name):
         if(Receiver.objects.filter(center__name__contains = center_name, appointmentDate = min_date).count() < Center.objects.get(name = center_name).maxCountPerDate):
             break  
         min_date = min_date + datetime.timedelta(days=1)
+    print("hi")
     print(center_name + "1")
     print(datetime.date.today())  
     print(min_date)
+    print("hi2")
     max_date = min_date + datetime.timedelta(days=7)
     blocked_dates = []
     start_date = min_date
     end_date = max_date
     delta = datetime.timedelta(days=1)
-
+    print("hi3")
     while start_date <= end_date:
         if(Receiver.objects.filter(center__name__contains = center_name, appointmentDate = start_date).count() >= Center.objects.get(name = center_name).maxCountPerDate):
             blocked_dates.append(str(start_date))
