@@ -4,7 +4,7 @@
     {% csrf_token %}
     <div class="form-group">
         <b><label for="exampleFormControlSelect1">Select Center</label></b>
-        <select class="form-control" name="district_center">
+        <select class="form-control" name="district_center" required>
             <option value="" selected>Open this select menu</option>
             {% for district_center in  district_centers %}
             <option value="{{ district_center }}" style="text-transform: capitalize;">{{ district_center }}</option>
