@@ -7,7 +7,7 @@
         <select class="form-control" name="district_center">
             <option value="" selected>Open this select menu</option>
             {% for district_center in  district_centers %}
-            <option value="{{ district_center }}">{{ district_center }}</option>
+            <option value="{{ district_center }}" style="text-transform: capitalize;">{{ district_center }}</option>
             {% endfor %}
         </select><br>
     </div>
