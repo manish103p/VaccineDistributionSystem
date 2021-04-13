@@ -512,39 +512,40 @@ def get_ratio_center(district):
             min_value=center.population
         if(center.population > max_value):
             max_value=center.population
-    print("I am here")
+    # print("I am here")
     population_ratio_dict={}
     sum_of_ratio=0
     if(min_value==0):
         min_value=1
 
-    print("I am here")
     for center in center_obj.iterator():
         population_ratio_dict[center.name]=ceil(center.population/min_value)
         sum_of_ratio+=population_ratio_dict[center.name]
-    print("I reached")
+
     print(population_ratio_dict)
-    if(sum_of_ratio > count_of_vaccine_atDistrict_state):
-        while(sum_of_ratio > count_of_vaccine_atDistrict_state):
-            quantity_subtract=count_of_vaccine_atDistrict_state-sum_of_ratio
-            sum_of_ratio=0
-            count=0
-            for key in population_ratio_dict:
+    # if(sum_of_ratio > count_of_vaccine_atDistrict_state):
+    #     while(sum_of_ratio > count_of_vaccine_atDistrict_state):
+    #         quantity_subtract=count_of_vaccine_atDistrict_state-sum_of_ratio
+    #         sum_of_ratio=0
+    #         count=0
+    #         for key in population_ratio_dict:
 
-                print(int(population_ratio_dict[key])>0,quantity_subtract<0,quantity_subtract,count<quantity_subtract)
+    #             print(int(population_ratio_dict[key])>0,quantity_subtract<0,quantity_subtract,count<quantity_subtract)
 
-                if(int(population_ratio_dict[key])>0 and count<abs(quantity_subtract)):
-                    population_ratio_dict[key]-=1
-                    count+=1
-                    print(key)
-                    print(population_ratio_dict)
-                sum_of_ratio+=population_ratio_dict[key]
+    #             if(int(population_ratio_dict[key])>0 and count<abs(quantity_subtract)):
+    #                 population_ratio_dict[key]-=1
+    #                 count+=1
+    #                 print(key)
+    #                 print(population_ratio_dict)
+    #             sum_of_ratio+=population_ratio_dict[key]
                 # quantity_subtract=count_of_vaccine_atDistrict_state-sum_of_ratio
     print(sum_of_ratio)
     ratio_multiplication_factor = count_of_vaccine_atDistrict_state / sum_of_ratio
 
     for center in center_obj:
         ratio_dict[center.name] = floor(ratio_multiplication_factor * population_ratio_dict[center.name])
+        if ratio_dict[center.name] == 0:
+            ratio_dict[center.name] = ceil(ratio_multiplication_factor * population_ratio_dict[center.name])
 
     return ratio_dict
 
