@@ -12,12 +12,20 @@ import uuid
 import datetime
 import sys
 from math import floor,ceil
+import logging
+logging.basicConfig(filename="std.log", 
+					format='%(asctime)s %(message)s', 
+					filemode='w') 
+logger=logging.getLogger() 
+logger.setLevel(logging.DEBUG) 
 # Create your views here.
 def index(request):
     # objs = [VaccineLot() for i in range(40)]
     # VaccineLot.objects.bulk_create(objs,batch_size=40)
     lots = VaccineLot.objects.all()
     total_consumed = 0
+    # str1=str(total_consumed)+"Registered"
+    # logger.info(str1)
     for lot in lots:
         total_consumed += lot.countOfDosesConsumed
     return render(request,"index.html", {"total_doses_consumed":total_consumed})
@@ -77,6 +85,8 @@ def register_user(request):
                     district_obj.districtId=uuid.uuid4()
                     district_obj.save()
                     print("SAved")
+                    str1=str(user.aadharNumber)+" Registered"
+                    logger.info(str1)   
                     return redirect('dashboard')
             # user.save()
 
@@ -205,6 +215,8 @@ def login_gen(request):
 @login_required(login_url="login_gen")
 def dashboard(request):
     user=request.user
+    str1=str(user.aadharNumber)+" Logged In"
+    logger.info(str1)   
     # solve login
     # or remove
     center_access=AccessControlListCenter.objects.filter(person=user)
@@ -459,6 +471,8 @@ def send_to_district(request):
                             lot.departureTimestamp = datetime.datetime.now()
                             lot.save()
                             count -= 1
+                            str1=str(request.user.aadharNumber)+" sent to"
+                            logger.info(str1)   
                         else:
                             print("hello")
                             error = "Quantities were assigned upto district: " + district_name 
@@ -541,6 +555,9 @@ def get_ratio_center(district):
                 # quantity_subtract=count_of_vaccine_atDistrict_state-sum_of_ratio
     print(sum_of_ratio)
     ratio_multiplication_factor = count_of_vaccine_atDistrict_state / sum_of_ratio
+
+
+    logger.info(ratio_multiplication_factor)
 
     for center in center_obj:
         ratio_dict[center.name] = floor(ratio_multiplication_factor * population_ratio_dict[center.name])
