@@ -58,7 +58,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email=models.EmailField(unique=True)
     first_name=models.CharField(max_length=150)
     last_name=models.CharField(max_length=150)
-    aadharNumber=models.CharField(max_length=30, unique=True)
+    aadharNumber=models.CharField(max_length=30, unique=True, )
     USERNAME_FIELD='email'
     REQUIRED_FIELDS=['first_name','last_name','aadharNumber']
 
@@ -86,7 +86,7 @@ class VaccineLot(models.Model):
 
 class District(models.Model):
     districtPrimaryKey = models.AutoField(primary_key=True)
-    districtId = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    districtId = models.UUIDField(default=uuid.uuid4, unique=True)   
     # userName = models.CharField(max_length=255)
     name = models.CharField(max_length=255, unique=True)
     population = models.IntegerField(default=1)
@@ -136,7 +136,7 @@ class CenterRegestration(models.Model):
 
 
 class Receiver(models.Model):
-    aadharNumber = models.CharField(max_length=16, unique=True, primary_key=True)
+    aadharNumber = models.CharField(max_length=16, unique=True, primary_key=True) 
     center = models.ForeignKey(Center,on_delete=models.CASCADE,related_name="receiver")
     name = models.CharField(max_length=255)
     contactNumber= models.CharField(max_length=12, )
@@ -165,8 +165,19 @@ class AccessControlListCenter(models.Model):
         unique_together = (("person", "center"),)
 
 
+class Keys(models.Model):
+    person=models.EmailField()
+    key=models.UUIDField(editable=False, unique=True)
+    district_name=models.CharField(max_length=255)
+    center_name=models.CharField(max_length=255)
+    class Meta:
+        unique_together = (("person", "key"),)
+
+
 #TODO if a user is a distreict or center admin they should access their own center or admin
 #TODO Create Authentication table fields user and the access tokens or primary key of centers. Create logging of every user
 
 
 #TODO 
+
+#  vashi 1hheheh
