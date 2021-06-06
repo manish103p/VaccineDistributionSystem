@@ -92,7 +92,7 @@ class District(models.Model):
     population = models.IntegerField(default=1)
     # password = models.CharField(max_length=20)
     def __str__(self):
-        return self.districtId.urn[9:]+self.name
+        return self.name
 
 class DistrictVaccineData(models.Model):
     district = models.ForeignKey(District,on_delete=models.CASCADE,related_name="districtVaccine")
@@ -116,7 +116,7 @@ class Center(models.Model):
     population = models.IntegerField(default=1)
     # password = models.CharField(max_length=20)
     def __str__(self):
-        return str(self.centerPrimaryKey)+self.name
+        return self.name
 
 class CenterVaccineData(models.Model):
     center = models.ForeignKey(Center, on_delete=models.CASCADE, related_name="centerVaccine")
