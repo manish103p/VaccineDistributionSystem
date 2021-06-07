@@ -144,3 +144,6 @@ EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'vaccine.maharashtra@gmail.com' 
 EMAIL_HOST_PASSWORD = key["key"]
+
+USE_TZ = True
+TIME_ZONE = 'Asia/Kolkata'

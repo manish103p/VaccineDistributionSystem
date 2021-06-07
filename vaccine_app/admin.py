@@ -58,12 +58,12 @@ class DistrictConfig(admin.ModelAdmin):
   ordering=('name',)
   list_display=('name','population',)
   fieldsets = (
-        ('Edit Values', {'fields': ('name','population','districtId')}),
+        ('Edit Values', {'fields': ('name','population')}),
     )
   add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ( 'name','population','districtId')}
+            'fields': ( 'name','population')}
          ),
     )
   readonly_fields = ['districtId']
