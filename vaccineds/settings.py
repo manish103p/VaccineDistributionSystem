@@ -137,7 +137,6 @@ AUTH_USER_MODEL='vaccine_app.User'
 
 key_file = open(os.path.join(BASE_DIR,'key/key.json'),)
 key = json.load(key_file)
-print(key["key"])
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
