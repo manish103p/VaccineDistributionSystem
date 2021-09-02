@@ -27,7 +27,7 @@ SECRET_KEY = 'q*c1cyzza-o3jk9i8i#6@+11-*+1%!3$^d(zru1e*rgke0n2#$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['vaccineds.herokuapp.com','127.0.0.1']
+ALLOWED_HOSTS = ['vaccinedistributionsystem.herokuapp.com','127.0.0.1']
 
 
 # Application definition
