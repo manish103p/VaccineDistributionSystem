@@ -1,11 +1,13 @@
 from django.urls import path
 from . import views,urls
 from django.conf import settings
+from django.contrib.sitemaps.views import sitemap
 
 
 
 urlpatterns = [
     path('', views.index,name="index"),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('send_to_district',views.send_to_district,name='send_to_district'),
     path('register', views.register_user,name="register"),
     path('registerForVaccinationDistrictForm', views.registerForVaccinationDistrictForm,name="registerForVaccinationDistrictForm"),
