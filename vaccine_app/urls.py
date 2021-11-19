@@ -32,10 +32,6 @@ urlpatterns = [
     path('dashboard/',views.dashboard,name='dashboard'),
 
     path('give_access_megaCenter', views.give_access_megaCenter, name='give_access_megaCenter'),
-
-    path('sitemap.xml', sitemap, # new
-        {'sitemaps': {'blog': GenericSitemap(info_dict, priority=0.6)}},
-        name='django.contrib.sitemaps.views.sitemap'),
 ]
 
 if settings.DEBUG:
