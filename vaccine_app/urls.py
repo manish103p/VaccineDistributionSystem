@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views,urls
 from django.conf import settings
-from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps.views import sitemap, robot
 
 
 
@@ -33,7 +33,8 @@ urlpatterns = [
 
     path('give_access_megaCenter', views.give_access_megaCenter, name='give_access_megaCenter'),
 
-    path('sitemap.xml', views.sitemap, name="sitemap")
+    path('sitemap.xml', views.sitemap, name="sitemap"),
+    path('robots.txt', views.robot, name="robots")
 ]
 
 if settings.DEBUG:

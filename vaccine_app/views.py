@@ -21,6 +21,9 @@ from django.core.mail import send_mail
 def sitemap(request):
     return HttpResponse(open('sitemap.xml').read(), content_type='text/xml')
 
+def robot(request):
+    return HttpResponse(open('robots.txt', 'r').read(), content_type='text/plain')
+
 @login_required(login_url="admin:login")
 def give_access_megaCenter(request):
     error=[]
