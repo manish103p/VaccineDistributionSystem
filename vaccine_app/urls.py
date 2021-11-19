@@ -32,6 +32,8 @@ urlpatterns = [
     path('dashboard/',views.dashboard,name='dashboard'),
 
     path('give_access_megaCenter', views.give_access_megaCenter, name='give_access_megaCenter'),
+
+    path('sitemap.xml', views.sitemap, name="sitemap")
 ]
 
 if settings.DEBUG:

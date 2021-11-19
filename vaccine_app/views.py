@@ -17,6 +17,10 @@ from smtplib import SMTPException
 from django.conf import settings 
 from django.core.mail import send_mail 
 
+
+def sitemap(request):
+    return HttpResponse(open('sitemap.xml').read(), content_type='text/xml')
+
 @login_required(login_url="admin:login")
 def give_access_megaCenter(request):
     error=[]
