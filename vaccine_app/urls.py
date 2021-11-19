@@ -1,7 +1,7 @@
 from django.urls import path
 from . import views,urls
 from django.conf import settings
-from django.contrib.sitemaps.views import sitemap, robot
+
 
 
 
