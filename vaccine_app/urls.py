@@ -7,7 +7,7 @@ from django.contrib.sitemaps.views import sitemap
 
 urlpatterns = [
     path('', views.index,name="index"),
-    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+    # path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('send_to_district',views.send_to_district,name='send_to_district'),
     path('register', views.register_user,name="register"),
     path('registerForVaccinationDistrictForm', views.registerForVaccinationDistrictForm,name="registerForVaccinationDistrictForm"),
@@ -31,7 +31,11 @@ urlpatterns = [
 
     path('dashboard/',views.dashboard,name='dashboard'),
 
-    path('give_access_megaCenter', views.give_access_megaCenter, name='give_access_megaCenter')
+    path('give_access_megaCenter', views.give_access_megaCenter, name='give_access_megaCenter'),
+
+    path('sitemap.xml', sitemap, # new
+        {'sitemaps': {'blog': GenericSitemap(info_dict, priority=0.6)}},
+        name='django.contrib.sitemaps.views.sitemap'),
 ]
 
 if settings.DEBUG:
